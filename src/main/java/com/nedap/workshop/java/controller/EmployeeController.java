@@ -6,9 +6,11 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.nedap.workshop.java.model.Employee;
+import com.nedap.workshop.java.service.EmployeeService;
 
 /**
  * @author paul.vandenberg
@@ -16,14 +18,22 @@ import com.nedap.workshop.java.model.Employee;
 @Named(value = "employeeController")
 @RequestScoped
 public class EmployeeController {
-    private List<Employee> employees = new ArrayList<Employee>();
 
-    @PostConstruct
-    public void init() {
-        employees.addAll(Arrays.asList(new Employee("Henny"), new Employee("Sjaak")));
-    }
+    @Inject
+    EmployeeService employeeService;
+
+    @Inject
+    Employee employee;
 
     public List<Employee> getEmployees() {
-        return employees;
+        return employeeService.findAll();
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void save() {
+        employeeService.save(employee);
     }
 }
