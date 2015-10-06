@@ -11,5 +11,9 @@
             <h:outputText value="#{employee.name}"/>
         </h:column>
     </h:dataTable>
+    <h:form>
+        <h:inputText value="#{employeeController.employee.name}"/>
+        <h:commandButton action="#{employeeController.save}" value="Save"/>
+    </h:form>
 </body>
 </html>
