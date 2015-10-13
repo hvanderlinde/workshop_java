@@ -12,7 +12,8 @@
         </h:column>
     </h:dataTable>
     <h:form>
-        <h:inputText value="#{employeeController.employee.name}"/>
+        <h:message for="name"/>
+        <h:inputText id="name" value="#{employeeController.employee.name}"/>
         <h:commandButton action="#{employeeController.save}" value="Save"/>
     </h:form>
 </body>
