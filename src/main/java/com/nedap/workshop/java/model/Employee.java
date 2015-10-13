@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author paul.vandenberg
@@ -25,6 +27,8 @@ public class Employee implements Serializable {
     @Version
     private int version;
 
+    @NotNull
+    @Size(min = 1, max=10)
     private String name;
 
     public Long getId() {
