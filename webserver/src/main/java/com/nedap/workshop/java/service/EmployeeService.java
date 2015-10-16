@@ -1,12 +1,11 @@
 package com.nedap.workshop.java.service;
 
-import java.util.List;
+import com.nedap.workshop.java.model.Employee;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import com.nedap.workshop.java.model.Employee;
+import java.util.List;
 
 /**
  * @author paul.vandenberg
