@@ -4,19 +4,33 @@
     <groupId>com.nedap</groupId>
     <artifactId>course</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>webserver</module>
+    </modules>
+
     <build>
         <finalName>course</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
-    <properties>
-        <failOnMissingWebXml>false</failOnMissingWebXml>
-    </properties>
+
+    <profiles>
+        <profile>
+            <id>ws-client</id>
+            <modules>
+                <module>webservice-client</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
