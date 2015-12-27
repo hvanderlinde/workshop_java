@@ -1,7 +1,7 @@
 package com.nedap.workshop.java.webservice;
 
-import com.nedap.workshop.java.model.Employee;
-import com.nedap.workshop.java.service.EmployeeService;
+import com.nedap.workshop.scala.model.Employee;
+import com.nedap.workshop.scala.service.EmployeeService;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;

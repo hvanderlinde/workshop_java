@@ -6,8 +6,8 @@ import javax.inject.Inject;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 
-import com.nedap.workshop.java.model.Employee;
-import com.nedap.workshop.java.service.EmployeeService;
+import com.nedap.workshop.scala.model.Employee;
+import com.nedap.workshop.scala.service.EmployeeService;
 
 /**
  * @author paul.vandenberg
