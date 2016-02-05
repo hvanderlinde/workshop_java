@@ -1,68 +1,33 @@
-##Installation
-###Install Java
-Download and install java JDK 8  
-<http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html>  
-Set the environment variable `JAVA_HOME` to your jdk installation  
-`$ export JAVA_HOME=<your jdk8 installation>`
+##JavaServer Faces
 
-### WildFly
-Download and unzip Wildfly Application Server.  
-<http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip>  
-Set the environment variable `JBOSS_HOME` to your Wildfly root folder.  
-`$ $JBOSS_HOME/bin/standalone.sh`
+###Model
+Create a new Java class called `Employee` in the folder `src/main/java` in the package `com.nedap.workshop.java.model`  
 
-### Forge
-Download an unzip JBoss Forge  
-<http://forge.jboss.org/download>
-##Project setup
-###Generate project structure
-Start Forge to generate a new project
+The class should contain:  
 
-```
-$ forge
-```
-When the Forge console is started, create a new web project
+* A field called `name` with getters and setters.  
+* A contructor with a `name` parameter, which will set the name upon creation 
 
-```
-$ project-new --named workshop_java --type war --topLevelPackage com.nedap.workshop
-$ cdi-setup
-$ faces-setup
-```
-Exit the Forge console (ctrl-D)
+###Web page
+Edit the file `index.xhtml` (created in step 1)  
+Add `xmlns:f="http://xmlns.jcp.org/jsf/core"` as an attribute of the `html` tag  
+Replace the `h:outputLabel` tag with  
 
-###Add maven wildfly plugin
-Open the file `pom.xml` in a texteditor and add to following within the `<plugins>` tag
-
-```
-<plugin>
-	<groupId>org.wildfly.plugins</groupId>
-	<artifactId>wildfly-maven-plugin</artifactId>
-	<version>1.1.0.Alpha5</version>
-	<executions>
-	  <execution>
-	    <phase>install</phase>
-	    <goals>
-	      <goal>deploy</goal>
-	    </goals>
-	  </execution>
-	</executions>
-</plugin>
+```xml
+<h:dataTable value="#{employeeBean.employees}" var="employee">
+	<h:column>
+		<f:facet name="Name"/>
+		<h:outputText value="#{employee.name}"/>
+	</h:column>
+</h:dataTable>
 ```
 
-Create a file called `index.xhtml` in the folder `src/main/webapp` with the following content
+IntelliJ might complain about missing beans and/or methods. That's correct, because we are missing the `EmployeeBean` with the `employees` property. Let's fix that.
 
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <h:outputLabel value="Hello, world"/>
-</html>
+###Managed Bean
+Create a new Java class called `EmployeeBean` in the folder `src/main/java` in the package `com.nedap.workshop.java.controller`
+The class should contain:
 
-```
-
-`$ mvn install` From your project root
-
-open <http://localhost:8080/workshop_java/faces/index.xhtml> in your browser.  
-You should now see a welcome page displaying "Hello World".
+* A class annotation `@Named` and `@RequestScoped` (Uit de package `javax.enterprise.context`)
+* A field called `employees` which is a List of Employee objects with a getter
+* A public void method called `init` with a `@PostConstruct` annotation. That method should populate `employees` with a bunch of dummy employees.
