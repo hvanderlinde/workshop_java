@@ -1,33 +1,48 @@
-##JavaServer Faces
+##Saving employees
 
-###Model
-Create a new Java class called `Employee` in the folder `src/main/java` in the package `com.nedap.workshop.java.model`  
+###Java Persistence API
 
-The class should contain:  
-
-* A field called `name` with getters and setters.  
-* A contructor with a `name` parameter, which will set the name upon creation 
-
-###Web page
-Edit the file `index.xhtml` (created in step 1)  
-Add `xmlns:f="http://xmlns.jcp.org/jsf/core"` as an attribute of the `html` tag  
-Replace the `h:outputLabel` tag with  
-
-```xml
-<h:dataTable value="#{employeeBean.employees}" var="employee">
-	<h:column>
-		<f:facet name="Name"/>
-		<h:outputText value="#{employee.name}"/>
-	</h:column>
-</h:dataTable>
+```bash
+$ cd <project root>
+$ forge
+$ jpa-setup
+$ ejb-setup
 ```
 
-IntelliJ might complain about missing beans and/or methods. That's correct, because we are missing the `EmployeeBean` with the `employees` property. Let's fix that.
+Edit the class `Employee`  
 
-###Managed Bean
-Create a new Java class called `EmployeeBean` in the folder `src/main/java` in the package `com.nedap.workshop.java.controller`
-The class should contain:
+* A class annotation `@Entity`
+* Add a constructor without parameters and no implementation
+* Add an id field of type Long that acts as the primary key. See <http://www.objectdb.com/java/jpa/entity/id#Automatic_Primary_Key_> for more information
+* Add a version field of type Integer, annotated with `@version`
+* create getters for version and id
 
-* A class annotation `@Named` and `@RequestScoped` (Uit de package `javax.enterprise.context`)
-* A field called `employees` which is a List of Employee objects with a getter
-* A public void method called `init` with a `@PostConstruct` annotation. That method should populate `employees` with a bunch of dummy employees.
+###Enterprise JavaBeans
+Create a Java class `com.nedap.workshop.service.EmployeeService` with
+
+* A class annotation `@Stateless`
+* A Field of type `EntityManager` annotated with `@PersistenceContext`
+* A `save` method with an Employee parameter which calls `persist()` on the injected EntityManager
+* A `findAll` method which retrieves all Employees by running a query, created with the EntityManager. See <https://docs.oracle.com/javaee/7/tutorial/persistence-querylanguage002.htm#BNBRG> for more information
+
+###Web
+
+Edit the class `EmployeeBean`
+
+* Remove the init method
+* Remove the field `employees`
+* Add a field of type `EmployeeService` annotated with `@Inject`
+* Add a field of type `Employee` annotated with `@Inject` and create a getter for this field
+* Replace the implementation of `getEmployees` with a call to the `findAll()` method on the injected EmployeeService
+* Add a `save()` method that calls the `save(employee)` on the injected EmployeeService
+
+Edit the page index.xhtml
+
+* add a `h:form` tag after the datatable tag
+* within the form create a `h:inputText` tag with 
+	* a value that points to the employee name via the EmployeeBean
+* within the form create a `h:commandButton` tag with
+	* an action attribute that calls the save method on the EmployeeBean.
+	* a value attribute "save"
+
+

@@ -9,5 +9,9 @@
         <h:outputText value="#{employee.name}"/>
     </h:column>
 </h:dataTable>
+<h:form>
+    <h:inputText value="#{employeeBean.employee.name}" />
+    <h:commandButton action="#{employeeBean.save}" value="Save"/>
+</h:form>
 </body>
 </html>
