@@ -1,80 +1,77 @@
-##Employees SOAP Service
-
-###Webservice server
-
-```bash
-$ cd <project root>
-$ forge
-$ soap-setup
-$ crtl-d
-```
-Create a class `EmployeeSoapService` in `com.nedap.workshop.java.webservice` with 
- 
-* Class annotation `@WebService`
-* Field of type `EmployeeService`, annotated with `@Inject`
-* Method `getEmployees()` with
-	* Annotation `@WebMethod`
-	* Implementation that calls the findAll method on the injected EmployeeService
-* Method `add(name)` with
-	* Annotation `WebMethod(operationName = "add")`
-	* Implementation that calls the save method on the injected EmployeeService
-
-```bash
-$ cd <project root>
-$ mvn install
-```
-
-Open a browser and open <http://localhost:8080/workshop_java/EmployeeSoapService?wsdl>  
-That should show the wsdl contents in the browser
-
-###Webservice client
+##Streaming REST Service
+### Server
 
 ```bash
 $ cd <project root>
 $ forge
-$ project-new --named "webservice-client" --topLevelPackage com.nedap.workshop --type jar
-$ crtl-d
+$ javaee-setup --javaEEVersion 7
+$ cd webservice-client
+$ javaee-setup --javaEEVersion 7
 ```
-Open the newly created project in Intellij. Select "File" -> "Open..." and choose the pom.xml in the project-root of webservice-client.
+Edit `EmployeeRestService` and add a field with type `ManagedExecutorService`, annotated with `@Resource`
 
-Edit the file pom.xml
-Within the tag `<build>` add the following snippet
+```java
+@GET
+@Path("streaming")
+public void streams(@Suspended final AsyncResponse asyncResponse) {
+    executor.submit(() -> {
+        String employees = employeeService.findAll().stream().map((Employee::getName)).collect(Collectors.joining());
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        asyncResponse.resume(employees);
+    });
+}
+```	
+
+###Client
+
+```
+$ cd <project root>/webservice-client
+```
+
+Edit file `pom.xml` and add the following dependency
 
 ```xml
-<plugins>
-    <plugin>
-        <groupId>org.jvnet.jax-ws-commons</groupId>
-        <artifactId>jaxws-maven-plugin</artifactId>
-        <version>2.3</version>
-        <executions>
-            <execution>
-                <goals>
-                    <goal>wsimport</goal>
-                </goals>
-                <configuration>
-                    <wsdlUrls>
-                        <wsdlUrl>http://localhost:8080/workshop_java/EmployeeSoapService?wsdl</wsdlUrl>
-                    </wsdlUrls>
-                </configuration>
-            </execution>
-        </executions>
-    </plugin>
-</plugins>
+<dependency>
+  <groupId>org.jboss.resteasy</groupId>
+  <artifactId>resteasy-client</artifactId>
+  <version>3.0.2.Final</version>
+</dependency>
 ```
 
-Create a class `WebserviceClient` with
+Create a new java class `StreamingClient` with the following implementation
 
-* Method `public static void main(String... args)`  
-	* get an instance of the webservice client with `new EmployeeSoapServiceService().getEmployeeSoapServicePort();`
-	* Create and print some employees with the instance of the webservice client
+```java
+public static void main(String... args) throws IOException {
+    EmployeeSoapService employeeWebservice = new EmployeeSoapServiceService().getEmployeeSoapServicePort();
+    IntStream.range(0, 1000).forEach(i -> employeeWebservice.add("emp " + i));
 
-	
-```bash
-$ cd <project root>/webservice-client
-$ mvn install
+    Client client = ClientBuilder.newClient();
+    String request = "http://localhost:8080/workshop_java/rest/employees/streaming";
+
+    Future<String> stringFuture = client.target(request)
+            .request(MediaType.APPLICATION_OCTET_STREAM)
+            .async()
+            .get(new InvocationCallback<String>() {
+                @Override
+                public void completed(String s) {
+                    System.out.println(s);
+                }
+
+                @Override
+                public void failed(Throwable throwable) {
+                    System.err.println(throwable);
+                }
+            });
+
+    System.out.println("doing something else in the meantime");
+}
 ```
 
-Run the created class as a standalone java application
+
 
 
 
