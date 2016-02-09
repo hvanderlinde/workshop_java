@@ -17,6 +17,7 @@ Set the environment variable `JBOSS_HOME` to your Wildfly root folder.
 $ export JBOSS_HOME=<your Wildfly installation>
 ```
 
+Start Wildfly in a separate shell:
 ```bash
 $ $JBOSS_HOME/bin/standalone.sh
 ```
