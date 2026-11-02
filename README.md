@@ -6,7 +6,7 @@ Create a new Java class called `Employee` in the folder `src/main/java` in the p
 The class should contain:  
 
 * A field called `name` with getters and setters.  
-* A contructor with a `name` parameter, which will set the name upon creation 
+* A constructor with a `name` parameter, which will set the name upon creation 
 
 ###Web page
 Edit the file `index.xhtml` (created in step 1)  
