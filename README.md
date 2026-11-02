@@ -11,10 +11,10 @@ $ ejb-setup
 
 Edit the class `Employee`  
 
-* A class annotation `@Entity`
-* Add a constructor without parameters and no implementation
+* A class annotation `@Entity`. In order to use this annotation the approriate Maven dependency must be added. Use the IntelliJ context menu and see the changes in your `pom.xml`. After that enable the auto-import of Maven changes.
+* Add a default-constructor (a constructor without parameters) and no implementation
 * Add an id field of type Long that acts as the primary key. See <http://www.objectdb.com/java/jpa/entity/id#Automatic_Primary_Key_> for more information
-* Add a version field of type Integer, annotated with `@version`
+* Add a version field of type Integer, annotated with `@Version`
 * create getters for version and id
 
 ###Enterprise JavaBeans
@@ -23,7 +23,7 @@ Create a Java class `com.nedap.workshop.service.EmployeeService` with
 * A class annotation `@Stateless`
 * A Field of type `EntityManager` annotated with `@PersistenceContext`
 * A `save` method with an Employee parameter which calls `persist()` on the injected EntityManager
-* A `findAll` method which retrieves all Employees by running a query, created with the EntityManager. See <https://docs.oracle.com/javaee/7/tutorial/persistence-querylanguage002.htm#BNBRG> for more information
+	* A `findAll` method which retrieves all Employees by running a query, created with the EntityManager. See <https://docs.oracle.com/javaee/7/tutorial/persistence-querylanguage002.htm#BNBRG> for more information
 
 ###Web
 
